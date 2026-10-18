@@ -2,8 +2,9 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import { profile, skills } from "../data/profile";
-import { projects } from "../data/projects";
+import { fetchProjects } from "../data/projects";
 
+const projects = await fetchProjects();
 const year = new Date().getFullYear();
 ---
 
@@ -22,7 +23,7 @@ const year = new Date().getFullYear();
   <main id="top" class="container">
     <section class="hero">
       <p class="eyebrow">// Portafolio de proyectos</p>
-      <h1>Hola, soy <span class="name">{profile.name}</span>.<br />Construyo software de backend a AR.</h1>
+      <h1>Hola, soy <span class="name">{profile.name}</span>.<br />Construyo software de móvil a AR.</h1>
       <p>{profile.tagline}</p>
       <div class="hero-actions">
         <a href="#proyectos" class="btn btn-primary">Ver proyectos</a>
@@ -32,6 +33,7 @@ const year = new Date().getFullYear();
 
     <section id="proyectos">
       <h2 class="section-title"><span>01.</span>Proyectos destacados</h2>
+      <p class="section-sub">Sincronizado automáticamente con mis repositorios públicos de GitHub.</p>
       <div class="projects-grid">
         {projects.map((p) => <ProjectCard project={p} />)}
       </div>

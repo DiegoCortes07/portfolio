@@ -2,13 +2,13 @@ export const profile = {
   name: "Diego Cortes",
   role: "Desarrollador Full Stack & Estudiante de Ingeniería",
   github: "https://github.com/DiegoCortes07",
-  avatar:
-    "https://avatars.githubusercontent.com/u/164814592?v=4",
+  avatar: "https://avatars.githubusercontent.com/u/164814592?v=4",
   tagline:
-    "Construyo desde backends con Express y Sequelize hasta dashboards con ETL y Realidad Aumentada en Unity.",
+    "Construyo desde apps móviles multiplataforma y backends con Express y Sequelize, hasta dashboards con ETL y Realidad Aumentada en Unity.",
 };
 
 export const skills = [
+  { name: "React Native + Expo", level: "Móvil" },
   { name: "Node.js / Express", level: "Backend" },
   { name: "Sequelize / SQLite", level: "Backend" },
   { name: "React + Vite", level: "Frontend" },

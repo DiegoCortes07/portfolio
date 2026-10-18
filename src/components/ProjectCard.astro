@@ -6,6 +6,13 @@ interface Props {
 }
 
 const { project } = Astro.props;
+
+const updated = project.pushedAt
+  ? new Date(project.pushedAt).toLocaleDateString("es-CL", {
+      year: "numeric",
+      month: "short",
+    })
+  : null;
 ---
 
 <article class="project-card" style={`--accent-a: ${project.accent}`}>
@@ -13,13 +20,19 @@ const { project } = Astro.props;
     <a href={project.repo} target="_blank" rel="noopener noreferrer" class="repo-link">
       <span class="lang-dot" style={`background: ${project.accent}`}></span>{project.name}
     </a>
-    <span style="color: var(--muted)">↗</span>
+    <span class="card-arrow">↗</span>
   </div>
   <p class="description">{project.description}</p>
-  <ul>
-    {project.highlights.map((h) => <li>{h}</li>)}
-  </ul>
+  {project.highlights.length > 0 && (
+    <ul>
+      {project.highlights.map((h) => <li>{h}</li>)}
+    </ul>
+  )}
   <div class="tags">
     {project.stack.map((s) => <span class="tag">{s}</span>)}
+  </div>
+  <div class="card-meta">
+    <span>{project.language}</span>
+    {updated && <span>Actualizado {updated}</span>}
   </div>
 </article>
