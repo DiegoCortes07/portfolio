@@ -494,6 +494,18 @@ section {
   border-color: var(--accent-a, var(--accent));
 }
 
+.award {
+  display: inline-block;
+  margin-bottom: 16px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #0b0f1a;
+  background: linear-gradient(90deg, #fcd34d, #fbbf24);
+  box-shadow: 0 6px 18px rgba(251, 191, 36, 0.22);
+}
+
 .card-meta {
   display: flex;
   justify-content: space-between;

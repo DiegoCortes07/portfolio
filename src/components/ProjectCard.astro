@@ -24,6 +24,7 @@ const updated = project.pushedAt
     <span class="card-arrow">↗</span>
   </div>
   <p class="description">{project.description}</p>
+  {project.award && <p class="award">{project.award}</p>}
   {project.highlights.length > 0 && (
     <ul>
       {project.highlights.map((h) => <li>{h}</li>)}

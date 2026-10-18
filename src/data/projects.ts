@@ -8,6 +8,7 @@ export type Project = {
   accent: string;
   pushedAt: string;
   stars: number;
+  award?: string;
 };
 
 const USER = "DiegoCortes07";
@@ -21,6 +22,7 @@ type CuratedInfo = {
   description: string;
   highlights: string[];
   stack: string[];
+  award?: string;
 };
 
 /** Descripciones curadas: tienen prioridad sobre la descripción del repo en GitHub. */
@@ -46,6 +48,7 @@ const curated: Record<string, CuratedInfo> = {
       "Bandeja de alertas, recomendaciones internas y exportación a CSV",
     ],
     stack: ["Python", "FastAPI", "Next.js", "SQLite", "ETL", "CI"],
+    award: "🥈 2° lugar en Hackadisc 2026",
   },
   "Backend-Ayudantia-DSM": {
     description:
@@ -123,6 +126,7 @@ function toProject(repo: GhRepo, index: number, info?: CuratedInfo): Project {
     accent: ACCENTS[index % ACCENTS.length],
     pushedAt: repo.pushed_at,
     stars: repo.stargazers_count,
+    award: info?.award,
   };
 }
 
