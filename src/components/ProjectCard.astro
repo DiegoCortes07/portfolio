@@ -25,6 +25,15 @@ const updated = project.pushedAt
   </div>
   <p class="description">{project.description}</p>
   {project.award && <p class="award">{project.award}</p>}
+  {project.pairLinks && project.pairLinks.length > 0 && (
+    <div class="repo-pair">
+      {project.pairLinks.map((link) => (
+        <a href={link.url} target="_blank" rel="noopener noreferrer" class="pair-link">
+          <span>{link.emoji}</span>{link.role}<span class="pair-arrow">↗</span>
+        </a>
+      ))}
+    </div>
+  )}
   {project.highlights.length > 0 && (
     <ul>
       {project.highlights.map((h) => <li>{h}</li>)}

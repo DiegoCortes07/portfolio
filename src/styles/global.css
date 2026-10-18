@@ -506,6 +506,45 @@ section {
   box-shadow: 0 6px 18px rgba(251, 191, 36, 0.22);
 }
 
+.repo-pair {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.pair-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition:
+    transform 0.25s var(--ease),
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+.pair-link:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-a, var(--accent));
+  background: rgba(56, 189, 248, 0.08);
+}
+
+.pair-arrow {
+  color: var(--muted);
+  font-size: 0.75rem;
+  transition: transform 0.25s var(--ease);
+}
+
+.pair-link:hover .pair-arrow {
+  transform: translate(2px, -2px);
+}
+
 .card-meta {
   display: flex;
   justify-content: space-between;

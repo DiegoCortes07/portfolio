@@ -9,12 +9,16 @@ export type Project = {
   pushedAt: string;
   stars: number;
   award?: string;
+  pairLinks?: { emoji: string; role: string; url: string }[];
 };
 
 const USER = "DiegoCortes07";
 
 /** Repos que no se muestran: el perfil, el propio sitio y pruebas sueltas. */
 const EXCLUDED = new Set(["Test", "DiegoCortes07", "portfolio"]);
+
+/** Repos que no llevan tarjeta propia porque se muestran junto a otro. */
+const HIDDEN_FROM_LIST = new Set(["Backend_Proyecto_Soluciones_Moviles"]);
 
 const ACCENTS = ["#5eead4", "#a5b4fc", "#f9a8d4", "#fcd34d", "#7dd3fc", "#fdba74"];
 
@@ -23,20 +27,26 @@ type CuratedInfo = {
   highlights: string[];
   stack: string[];
   award?: string;
+  /** Repositorios que se muestran lado a lado (frontend + backend). */
+  pair?: { emoji: string; role: string; name: string }[];
 };
 
 /** Descripciones curadas: tienen prioridad sobre la descripción del repo en GitHub. */
 const curated: Record<string, CuratedInfo> = {
   Frontend_Proyecto_Soluciones_Moviles: {
     description:
-      "Tunesly: app móvil multiplataforma (Android, iOS y web) tipo Spotify construida con React Native + Expo + TypeScript, con catálogo de música y podcasts, reproductor global y playlists.",
+      "Tunesly: proyecto full stack completo — app móvil multiplataforma (Android, iOS y web) tipo Spotify con React Native + Expo + TypeScript, más su API REST con JWT, Sequelize y Cloudinary.",
     highlights: [
       "Reproductor global con cola, seek, avance automático y mini-reproductor persistente entre pantallas",
-      "Autenticación (registro, login, verificación de correo) y contexto de sesión con token",
+      "API REST propia con autenticación JWT, verificación de correo y subida de audio e imágenes a Cloudinary",
       "Biblioteca personal: favoritos con actualización optimista y playlists con portada personalizable",
       "Tema claro/oscuro, idioma, filtro de contenido explícito y selección de plan persistidos vía API",
     ],
-    stack: ["React Native", "Expo", "TypeScript", "React Navigation", "expo-audio", "axios"],
+    stack: ["React Native", "Expo", "TypeScript", "Node.js", "Express", "Sequelize", "JWT"],
+    pair: [
+      { emoji: "📱", role: "Frontend", name: "Frontend_Proyecto_Soluciones_Moviles" },
+      { emoji: "🖥️", role: "Backend", name: "Backend_Proyecto_Soluciones_Moviles" },
+    ],
   },
   Hackadisc2026: {
     description:
@@ -111,7 +121,12 @@ type GhRepo = {
   stargazers_count: number;
 };
 
-function toProject(repo: GhRepo, index: number, info?: CuratedInfo): Project {
+function toProject(
+  repo: GhRepo,
+  index: number,
+  info?: CuratedInfo,
+  byName?: Map<string, GhRepo>,
+): Project {
   const language = repo.language ?? "Código";
   return {
     name: repo.name,
@@ -127,6 +142,11 @@ function toProject(repo: GhRepo, index: number, info?: CuratedInfo): Project {
     pushedAt: repo.pushed_at,
     stars: repo.stargazers_count,
     award: info?.award,
+    pairLinks: info?.pair?.map((p) => ({
+      emoji: p.emoji,
+      role: p.role,
+      url: byName?.get(p.name)?.html_url ?? `https://github.com/${USER}/${p.name}`,
+    })),
   };
 }
 
@@ -170,13 +190,16 @@ export async function fetchProjects(): Promise<Project[]> {
     if (!res.ok) throw new Error(`GitHub API ${res.status}`);
 
     const repos = (await res.json()) as GhRepo[];
-    const usable = repos.filter(
+    const all = repos.filter(
       (r) => !r.fork && !r.archived && !EXCLUDED.has(r.name),
     );
+    // El mapa incluye los repos emparejados, aunque no lleven tarjeta propia.
+    const byName = new Map(all.map((r) => [r.name, r]));
+    const usable = all.filter((r) => !HIDDEN_FROM_LIST.has(r.name));
     if (usable.length === 0) throw new Error("Sin repositorios públicos utilizables");
 
     console.info(`[projects] ${usable.length} repositorios públicos cargados desde la API`);
-    return usable.map((repo, i) => toProject(repo, i, curated[repo.name]));
+    return usable.map((repo, i) => toProject(repo, i, curated[repo.name], byName));
   } catch (error) {
     console.warn(
       `[projects] No se pudo consultar la API de GitHub (${error}); usando la lista curada.`,
