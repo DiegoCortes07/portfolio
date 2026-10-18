@@ -1,0 +1,59 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import { profile, skills } from "../data/profile";
+import { projects } from "../data/projects";
+
+const year = new Date().getFullYear();
+---
+
+<BaseLayout title="Diego Cortes · Portafolio">
+  <header class="site-header">
+    <div class="container">
+      <a href="#top" class="brand">diego<span>.dev</span></a>
+      <nav class="nav-links">
+        <a href="#proyectos">Proyectos</a>
+        <a href="#habilidades">Habilidades</a>
+        <a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top" class="container">
+    <section class="hero">
+      <p class="eyebrow">// Portafolio de proyectos</p>
+      <h1>Hola, soy <span class="name">{profile.name}</span>.<br />Construyo software de backend a AR.</h1>
+      <p>{profile.tagline}</p>
+      <div class="hero-actions">
+        <a href="#proyectos" class="btn btn-primary">Ver proyectos</a>
+        <a href={profile.github} target="_blank" rel="noopener noreferrer" class="btn btn-ghost">GitHub ↗</a>
+      </div>
+    </section>
+
+    <section id="proyectos">
+      <h2 class="section-title"><span>01.</span>Proyectos destacados</h2>
+      <div class="projects-grid">
+        {projects.map((p) => <ProjectCard project={p} />)}
+      </div>
+    </section>
+
+    <section id="habilidades">
+      <h2 class="section-title"><span>02.</span>Tecnologías que uso</h2>
+      <div class="skills-grid">
+        {skills.map((s) => (
+          <div class="skill">{s.name}<em>{s.level}</em></div>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>© {year} {profile.name}</span>
+      <span>
+        Hecho con <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> ·
+        <a href={profile.github} target="_blank" rel="noopener noreferrer">Código en GitHub</a>
+      </span>
+    </div>
+  </footer>
+</BaseLayout>
