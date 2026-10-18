@@ -9,6 +9,13 @@ const year = new Date().getFullYear();
 ---
 
 <BaseLayout title="Diego Cortes · Portafolio">
+  <div class="bg-blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+  <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+
   <header class="site-header">
     <div class="container">
       <a href="#top" class="brand">diego<span>.dev</span></a>
@@ -22,8 +29,8 @@ const year = new Date().getFullYear();
 
   <main id="top" class="container">
     <section class="hero">
-      <p class="eyebrow">// Portafolio de proyectos</p>
-      <h1>Hola, soy <span class="name">{profile.name}</span>.<br />Construyo software de móvil a AR.</h1>
+      <p class="eyebrow">// Full Stack Developer</p>
+      <h1>Hola, soy <span class="name">{profile.name}</span>.<br />Construyo software de la base de datos a la interfaz.</h1>
       <p>{profile.tagline}</p>
       <div class="hero-actions">
         <a href="#proyectos" class="btn btn-primary">Ver proyectos</a>
@@ -32,18 +39,22 @@ const year = new Date().getFullYear();
     </section>
 
     <section id="proyectos">
-      <h2 class="section-title"><span>01.</span>Proyectos destacados</h2>
-      <p class="section-sub">Sincronizado automáticamente con mis repositorios públicos de GitHub.</p>
+      <h2 class="section-title" data-reveal><span>01.</span>Proyectos destacados</h2>
+      <p class="section-sub" data-reveal style="--delay: 60ms">
+        Sincronizado automáticamente con mis repositorios públicos de GitHub.
+      </p>
       <div class="projects-grid">
-        {projects.map((p) => <ProjectCard project={p} />)}
+        {projects.map((p, i) => <ProjectCard project={p} index={i} />)}
       </div>
     </section>
 
     <section id="habilidades">
-      <h2 class="section-title"><span>02.</span>Tecnologías que uso</h2>
+      <h2 class="section-title" data-reveal><span>02.</span>Tecnologías que uso</h2>
       <div class="skills-grid">
-        {skills.map((s) => (
-          <div class="skill">{s.name}<em>{s.level}</em></div>
+        {skills.map((s, i) => (
+          <div class="skill" data-reveal style={`--delay: ${i * 55}ms`}>
+            {s.name}<em>{s.level}</em>
+          </div>
         ))}
       </div>
     </section>
@@ -58,4 +69,50 @@ const year = new Date().getFullYear();
       </span>
     </div>
   </footer>
+
+  <script>
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Aparición progresiva al hacer scroll.
+    const revealables = document.querySelectorAll("[data-reveal]");
+
+    if (reduced) {
+      revealables.forEach((el) => el.classList.add("in-view"));
+    } else {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("in-view");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12, rootMargin: "0px 0px -60px 0px" },
+      );
+      revealables.forEach((el) => observer.observe(el));
+    }
+
+    // Barra de progreso de lectura.
+    const progress = document.getElementById("scroll-progress");
+    const updateProgress = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const ratio = max > 0 ? window.scrollY / max : 0;
+      if (progress) progress.style.width = `${Math.min(ratio * 100, 100)}%`;
+    };
+    updateProgress();
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    window.addEventListener("resize", updateProgress);
+
+    // Halo que sigue al cursor sobre cada tarjeta.
+    if (!reduced) {
+      document.querySelectorAll(".project-card").forEach((card) => {
+        card.addEventListener("pointermove", (event) => {
+          const rect = card.getBoundingClientRect();
+          card.style.setProperty("--mx", `${event.clientX - rect.left}px`);
+          card.style.setProperty("--my", `${event.clientY - rect.top}px`);
+        });
+      });
+    }
+  </script>
 </BaseLayout>

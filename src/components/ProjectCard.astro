@@ -3,9 +3,10 @@ import type { Project } from "../data/projects";
 
 interface Props {
   project: Project;
+  index?: number;
 }
 
-const { project } = Astro.props;
+const { project, index = 0 } = Astro.props;
 
 const updated = project.pushedAt
   ? new Date(project.pushedAt).toLocaleDateString("es-CL", {
@@ -15,7 +16,7 @@ const updated = project.pushedAt
   : null;
 ---
 
-<article class="project-card" style={`--accent-a: ${project.accent}`}>
+<article class="project-card" data-reveal style={`--accent-a: ${project.accent}; --delay: ${(index % 3) * 90}ms;`}>
   <div class="card-top">
     <a href={project.repo} target="_blank" rel="noopener noreferrer" class="repo-link">
       <span class="lang-dot" style={`background: ${project.accent}`}></span>{project.name}
